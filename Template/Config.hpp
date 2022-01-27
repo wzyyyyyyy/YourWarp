@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <Nlohmann/json.hpp>
 #include <Utils/FileHelper.h>
 #include <LoggerAPI.h>
@@ -17,6 +17,7 @@ public:
 		Config conf;
 		try {
 			auto json = nlohmann::json::parse(ReadAllFile(path).value());
+			conf.warp_distance = json["warp_distance"].get<int>();
 			conf.max_warp_per_user = json["max_warp_per_user"].get<int>();
 			conf.max_warp_name_length = json["max_warp_name_length"].get<int>();
 			conf.min_warp_name_length = json["min_warp_name_length"].get<int>();

@@ -63,8 +63,8 @@ namespace WarpUtil {
 	}
 
 	bool createWarp(std::string warpname, std::string owner, Pos4 pos) {
-		auto num = getPlayerWarpNumber(owner);
-		setPlayerWarpNumber(owner, num++);
+		auto num = getPlayerWarpNumber(owner) + 1;
+		setPlayerWarpNumber(owner, num);
 		nlohmann::json json;
 		json["owner"] = owner;
 		json["x"] = pos.x;
@@ -81,8 +81,8 @@ namespace WarpUtil {
 
 	bool delWarp(std::string warpname) {
 		auto owner = getWarpOwner(warpname);
-		auto num = getPlayerWarpNumber(owner);
-		setPlayerWarpNumber(owner, num--);
+		auto num = getPlayerWarpNumber(owner) - 1;
+		setPlayerWarpNumber(owner, num);
 		std::string tmp;
 		db->get("__warplist__", tmp);
 		auto json = nlohmann::json::parse(tmp);

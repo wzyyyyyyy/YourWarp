@@ -53,10 +53,11 @@ public:
 
 					//check warpname
 					std::regex express(config.warp_name_regex);
-					if (std::regex_match(val, express)
-						&& val.length() >= config.max_warp_name_length
-						&& val.length() <= config.min_warp_name_length) {
+					if (!std::regex_match(val, express)
+						|| val.length() >= config.max_warp_name_length
+						|| val.length() <= config.min_warp_name_length) {
 						outp.addMessage(u8"你输入的传送点名称过长或过短或包含违规字符!");
+						return;
 					}
 
 					//check distance
@@ -67,7 +68,6 @@ public:
 						if (pos.dim == pl->getDimensionId()) {
 							auto distance = WarpUtil::distanceBetTwoPoints(pos, { (int)curpos.x,(int)curpos.y,(int)curpos.z,0 });
 							if (distance <= config.warp_distance) {
-								outp.addMessage(std::to_string(distance));
 								outp.addMessage(u8"附近已经有一个传送点了!");
 								return;
 							}

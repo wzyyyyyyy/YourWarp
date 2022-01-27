@@ -13,7 +13,7 @@ public:
 		set_warp_cost,
 		use_warp_cost;
 	std::string warp_name_regex;
-	Config static Load(std::string path) {
+	Config static load(std::string path) {
 		Config conf;
 		try {
 			auto json = nlohmann::json::parse(ReadAllFile(path).value());

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Global.h"
 #include "WarpUtil.h"
+#include "Command.h"
 #include <LoggerAPI.h>
 #include <KVDBAPI.h>
 #include <LLAPI.h>
@@ -14,6 +15,8 @@ void PluginInit()
 	LL::registerPlugin("YourWarp", "An easy-to-use warp plugin", LL::Version(1, 0, 0));
 	WarpUtil::loadConfig();
 	WarpUtil::initDB();
+	initCommand();
+	logger.info("load sucess!");
 }
 
 

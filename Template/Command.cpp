@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Global.h"
 #include "WarpUtil.h"
 #include <EventAPI.h>
@@ -21,8 +21,8 @@ class WarpCommand :public Command {
 	std::string val;
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		if (!(bool)ori.getPlayer()) {
-			outp.addMessage(u8"Ö»ÓĞÍæ¼Ò¿ÉÒÔÊ¹ÓÃ´ËÃüÁî!");
+		if (!ori.getPlayer()) {
+			outp.addMessage(u8"åªæœ‰ç©å®¶å¯ä»¥ä½¿ç”¨æ­¤å‘½ä»¤!");
 			return;
 		}
 		auto pl = ori.getPlayer();
@@ -38,25 +38,25 @@ public:
 				if (!pl->isOP()) {
 					//check warpnum
 					if (WarpUtil::getPlayerWarpNumber(xuid) >= config.max_warp_per_user) {
-					//	outp.addMessage(u8"ÄúµÄ´«ËÍµãÊıÁ¿ÒÑ¾­´ïµ½ÏŞÖÆ: " +
-							//std::to_string(WarpUtil::getPlayerWarpNumber(xuid)));
+						outp.addMessage(u8"æ‚¨çš„ä¼ é€ç‚¹æ•°é‡å·²è¾¾åˆ°é™åˆ¶: " +
+							std::to_string(WarpUtil::getPlayerWarpNumber(xuid)));
 						return;
 					}
 
 					//check money
 					if (LLMoneyGet(xuid) < config.set_warp_cost) {
-						//outp.addMessage(u8"ÄúµÄÓà¶î²»×ã: " +
-							//std::to_string(LLMoneyGet(xuid)));
+						outp.addMessage(u8"æ‚¨çš„ä½™é¢ä¸è¶³: " +
+							std::to_string(LLMoneyGet(xuid)));
 						return;
 					}
 					LLMoneyReduce(xuid, config.set_warp_cost);
 
 					//check warpname
 					std::regex express(config.warp_name_regex);
-					if (!std::regex_match(val, express)
+					if (std::regex_match(val, express)
 						&& val.length() >= config.max_warp_name_length
 						&& val.length() <= config.min_warp_name_length) {
-					//	outp.addMessage(u8"ÄãÊäÈëµÄ´«ËÍµãÃû³Æ¹ı³¤»ò¹ı¶Ì»ò°üº¬Î¥¹æ×Ö·û!");
+						outp.addMessage(u8"ä½ è¾“å…¥çš„ä¼ é€ç‚¹åç§°è¿‡é•¿æˆ–è¿‡çŸ­æˆ–åŒ…å«è¿è§„å­—ç¬¦!");
 					}
 
 					//check distance
@@ -67,7 +67,8 @@ public:
 						if (pos.dim == pl->getDimensionId()) {
 							auto distance = WarpUtil::distanceBetTwoPoints(pos, { (int)curpos.x,(int)curpos.y,(int)curpos.z,0 });
 							if (distance <= config.warp_distance) {
-							  //  outp.addMessage(u8"¸½½üÒÑ¾­ÓĞÒ»¸ö´«ËÍµãÁË!");
+								outp.addMessage(std::to_string(distance));
+								outp.addMessage(u8"é™„è¿‘å·²ç»æœ‰ä¸€ä¸ªä¼ é€ç‚¹äº†!");
 								return;
 							}
 						}
@@ -75,13 +76,13 @@ public:
 				}
 
 				if (WarpUtil::hasWarp(val)) {
-					//outp.addMessage(u8""+val+u8"µÄ´«ËÍµãÁË!");
+					outp.addMessage(u8"å·²ç»æœ‰åä¸º" + val + u8"çš„ä¼ é€ç‚¹äº†!");
 					return;
 				}
-				
+
 				auto curpos = ori.getWorldPosition();
 				WarpUtil::createWarp(val, xuid, { (int)curpos.x,(int)curpos.y,(int)curpos.z,pl->getDimensionId() });
-				//outp.addMessage(u8"ÒÑ³É¹¦´´½¨´«ËÍµã");
+				outp.addMessage(u8"æˆåŠŸåˆ›å»ºä¼ é€ç‚¹ï¼");
 			}
 			break;
 		}
@@ -89,18 +90,18 @@ public:
 		case del: {
 			if (val_isSet) {
 				if (!pl->isOP()
-					&& (WarpUtil::getWarpOwner(val) != xuid)){
-					//outp.addMessage(u8"´Ë´«ËÍµãµÄÖ÷ÈË²»ÊÇÄã!");
+					&& (WarpUtil::getWarpOwner(val) != xuid)) {
+					outp.addMessage(u8"æ­¤ä¼ é€ç‚¹çš„ä¸»äººä¸æ˜¯ä½ !");
 					return;
 				}
 
 				if (!WarpUtil::hasWarp(val)) {
-				//	outp.addMessage(u8"Ã»ÓĞÃû½Ğ"+val+u8"µÄ´«ËÍµã");
+					outp.addMessage(u8"æ²¡æœ‰åä¸º" + val + "çš„ä¼ é€ç‚¹ï¼");
 					return;
 				}
 
 				WarpUtil::delWarp(val);
-				//outp.addMessage(u8"³É¹¦É¾³ı´Ë´«ËÍµã");
+				outp.addMessage(u8"æˆåŠŸåˆ é™¤æ­¤ä¼ é€ç‚¹ï¼");
 			}
 			break;
 		}
@@ -110,12 +111,12 @@ public:
 			for (auto& i : WarpUtil::getWarpList()) {
 				auto pos = WarpUtil::getWarpPos(i);
 				auto owner = WarpUtil::getWarpOwner(i);
-				msg += u8"======== ´«ËÍµã: " + i + "=========";
+				msg += u8"======== ä¼ é€ç‚¹: " + i + "=========";
 				msg += "\nX: " + std::to_string(pos.x);
 				msg += "\nY: " + std::to_string(pos.y);
 				msg += "\nZ: " + std::to_string(pos.z);
-				msg += u8"\nÊÀ½ç: " + std::to_string(pos.dim);
-				msg += "\n===========================";
+				msg += u8"\nä¸–ç•Œ: " + std::to_string(pos.dim);
+				msg += "\n===========================\n";
 			}
 			outp.addMessage(msg);
 			break;
@@ -125,8 +126,8 @@ public:
 			if (val_isSet) {
 				if (!pl->isOP()) {
 					if (LLMoneyGet(xuid) < config.set_warp_cost) {
-					//	outp.addMessage(u8"ÄúµÄÓà¶î²»×ã: " +
-						//	std::to_string(LLMoneyGet(xuid)));
+						outp.addMessage(u8"æ‚¨çš„ä½™é¢ä¸è¶³: " +
+							std::to_string(LLMoneyGet(xuid)));
 						return;
 					}
 					LLMoneyReduce(xuid, config.set_warp_cost);
@@ -148,10 +149,15 @@ public:
 	static void setup(CommandRegistry* registry) {
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
-		registry->registerCommand("warp", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerCommand("ywarp", "An easy-to-use warp plugin", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
 		registry->addEnum<WarpCommand::WARPOP>("WARPOP", { {"add", WARPOP::add}, {"del", WARPOP::del}, {"go", WARPOP::go}, {"gui", WARPOP::gui}, {"ls", WARPOP::ls} });
-		registry->registerOverload<WarpCommand>("warp", makeMandatory<CommandParameterDataType::ENUM>(&WarpCommand::op, "op", "WARPOP"), makeOptional(&WarpCommand::val, "warp", &WarpCommand::val_isSet));
+		registry->registerOverload<WarpCommand>("ywarp", makeMandatory<CommandParameterDataType::ENUM>(&WarpCommand::op, "op", "WARPOP"), makeOptional(&WarpCommand::val, "warp", &WarpCommand::val_isSet));
 	}
 };
 
-
+void initCommand() {
+	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
+		WarpCommand::setup(e.mCommandRegistry);
+		return true;
+		});
+}

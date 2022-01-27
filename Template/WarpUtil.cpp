@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Global.h"
 #include "WarpUtil.h"
 #include <MC/BlockPos.hpp>
@@ -27,14 +27,14 @@ namespace WarpUtil {
 
 	bool hasWarp(std::string warpname) {
 		std::string tmp;
-		return db->get(warpname,tmp);
+		return db->get(warpname, tmp);
 	}
 
 	std::string getWarpOwner(std::string warpname) {
 		std::string tmp;
-	   db->get(warpname, tmp);
-	   auto json = nlohmann::json::parse(tmp);
-	   return json["owner"].get<std::string>();
+		db->get(warpname, tmp);
+		auto json = nlohmann::json::parse(tmp);
+		return json["owner"].get<std::string>();
 	}
 
 	Pos4 getWarpPos(std::string warpname) {
@@ -50,19 +50,21 @@ namespace WarpUtil {
 
 	int getPlayerWarpNumber(std::string pl) {
 		std::string tmp;
-		if (db->get(pl, tmp)) 
+		if (db->get(pl, tmp))
 			return atoi(tmp.c_str());
 		return 0;
 	}
 
-	void setPlayerWarpNumber(std::string pl,int num) {
+	void setPlayerWarpNumber(std::string pl, int num) {
 		std::string tmp;
 		if (db->get(pl, tmp))
 			db->set(pl, std::to_string(num));
+		else db->put(pl, std::to_string(num));
 	}
 
 	bool createWarp(std::string warpname, std::string owner, Pos4 pos) {
-		if (hasWarp(warpname)) return false;
+		auto num = getPlayerWarpNumber(owner);
+		setPlayerWarpNumber(owner, num++);
 		nlohmann::json json;
 		json["owner"] = owner;
 		json["x"] = pos.x;
@@ -72,16 +74,20 @@ namespace WarpUtil {
 		std::string tmp;
 		db->get("__warplist__", tmp);
 		auto json_ = nlohmann::json::parse(tmp);
-		json_["warpname"] = owner;
+		json_[warpname] = owner;
 		db->set("__warplist__", json_.dump());
 		return db->put(warpname, json.dump());
 	}
 
 	bool delWarp(std::string warpname) {
+		auto owner = getWarpOwner(warpname);
+		auto num = getPlayerWarpNumber(owner);
+		setPlayerWarpNumber(owner, num--);
 		std::string tmp;
 		db->get("__warplist__", tmp);
 		auto json = nlohmann::json::parse(tmp);
 		json.erase(warpname);
+		db->set("__warplist__", json.dump());
 		return db->del(warpname);
 	}
 
@@ -90,7 +96,7 @@ namespace WarpUtil {
 		std::string tmp;
 		db->get("__warplist__", tmp);
 		auto json = nlohmann::json::parse(tmp);
-		for (auto& [k,v] : json.items()) {
+		for (auto& [k, v] : json.items()) {
 			list.push_back(k);
 		}
 		return list;

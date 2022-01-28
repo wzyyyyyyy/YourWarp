@@ -1,3 +1,4 @@
-#pragma once
+﻿#pragma once
 
 void initCommand();
+void reinitWARPGUI();

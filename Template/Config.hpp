@@ -12,7 +12,9 @@ public:
 		min_warp_name_length,
 		set_warp_cost,
 		use_warp_cost;
-	std::string warp_name_regex;
+	std::string warp_name_regex,
+		money,
+		scoreboard_name;
 	Config static load(std::string path) {
 		Config conf;
 		try {
@@ -24,6 +26,8 @@ public:
 			conf.set_warp_cost = json["set_warp_cost"].get<int>();
 			conf.use_warp_cost = json["use_warp_cost"].get<int>();
 			conf.warp_name_regex = json["warp_name_regex"].get<std::string>();
+			conf.money = json["money"].get<std::string>();
+			conf.scoreboard_name = json["scoreboard_name"].get<std::string>();
 		}
 		catch (nlohmann::json::exception e) {
 			logger.error(e.what());

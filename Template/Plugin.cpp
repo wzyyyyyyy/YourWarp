@@ -2,12 +2,13 @@
 #include "Global.h"
 #include "WarpUtil.h"
 #include "Command.h"
+#include "Money.h"
 #include <LoggerAPI.h>
 #include <KVDBAPI.h>
 #include <LLAPI.h>
-
 Logger logger("YourWarp");
 std::unique_ptr<KVDB> db;
+std::unique_ptr<Money> money;
 Config config;
 
 void PluginInit()
@@ -19,6 +20,3 @@ void PluginInit()
 	initCommand();
 	logger.info("load sucess!");
 }
-
-
-

@@ -12,7 +12,7 @@ typedef long long money_t;
 
 enum LLMoneyEvent
 {
-	Set,Add,Reduce,Trans
+	Set, Add, Reduce, Trans
 };
 typedef bool (*LLMoneyCallback)(LLMoneyEvent type, xuid_t from, xuid_t to, money_t value);
 
@@ -56,6 +56,7 @@ extern "C" {
 // Old interface
 // Just for compatibility
 // Do not use
+/*
 namespace Money
 {
 	LLMONEY_API money_t getMoney(xuid_t xuid);
@@ -65,3 +66,4 @@ namespace Money
 	LLMONEY_API bool reduceMoney(xuid_t xuid, money_t money);
 	LLMONEY_API void purgeHist(int difftime = 0);
 }
+*/

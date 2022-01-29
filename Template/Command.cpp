@@ -1,5 +1,8 @@
 ﻿#include "pch.h"
 #include "Global.h"
+#include "Money.h"
+#include "LLmoney.h"
+#include "ScoreBoardMoney.h"
 #include "WarpUtil.h"
 #include <regex>
 #include <EventAPI.h>
@@ -71,12 +74,12 @@ public:
 					}
 
 					//check money
-					if (LLMoneyGet(xuid) < config.set_warp_cost) {
+					if (money->getMoney(pl) < config.set_warp_cost) {
 						outp.addMessage(u8"§c您的余额不足: " +
-							std::to_string(LLMoneyGet(xuid)));
+							std::to_string(money->getMoney(pl)));
 						return;
 					}
-					LLMoneyReduce(xuid, config.set_warp_cost);
+					money->reduceMoney(pl, config.set_warp_cost);
 
 					//check warpname
 					std::regex express(config.warp_name_regex);
@@ -155,12 +158,12 @@ public:
 		case go: {
 			if (val_isSet) {
 				if (!pl->isOP()) {
-					if (LLMoneyGet(xuid) < config.set_warp_cost) {
+					if (money->getMoney(pl) < config.set_warp_cost) {
 						outp.addMessage(u8"§c您的余额不足: " +
-							std::to_string(LLMoneyGet(xuid)));
+							std::to_string(money->getMoney(pl)));
 						return;
 					}
-					LLMoneyReduce(xuid, config.set_warp_cost);
+					money->reduceMoney(pl, config.set_warp_cost);
 				}
 
 				if (WarpUtil::hasWarp(val)) {

@@ -1,12 +1,17 @@
 ﻿#include "pch.h"
 #include "Global.h"
 #include "WarpUtil.h"
+#include "Money.h"
+#include "LLmoney.h"
+#include "ScoreBoardMoney.h"
 #include <MC/BlockPos.hpp>
 #include <KVDBAPI.h>
 
 namespace WarpUtil {
 	Config loadConfig() {
 		config = Config::load(CONFPATH);
+		if (config.money == "llmoney") money = std::make_unique<LLMoney>();
+		else money = std::make_unique<ScoreBoardMoney>(config.scoreboard_name);
 		return config;
 	}
 

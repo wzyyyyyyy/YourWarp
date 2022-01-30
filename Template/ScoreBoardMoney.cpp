@@ -10,7 +10,6 @@ ScoreBoardMoney::ScoreBoardMoney(std::string scoreboardname)
 
 int ScoreBoardMoney::getMoney(Player* pl)
 {
-	std::cout << "SBM::getMoney" << std::endl;
 	return Scoreboard::getScore(pl, name);
 }
 

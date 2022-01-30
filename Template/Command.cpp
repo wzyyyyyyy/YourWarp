@@ -79,7 +79,6 @@ public:
 							std::to_string(money->getMoney(pl)));
 						return;
 					}
-					money->reduceMoney(pl, config.set_warp_cost);
 
 					//check warpname
 					std::regex express(config.warp_name_regex);
@@ -110,6 +109,7 @@ public:
 					return;
 				}
 
+				money->reduceMoney(pl, config.set_warp_cost);
 				auto curpos = ori.getWorldPosition();
 				WarpUtil::createWarp(val, xuid, { (int)curpos.x,(int)curpos.y,(int)curpos.z,pl->getDimensionId() });
 				reinitWARPGUI();
